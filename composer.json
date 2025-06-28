@@ -1,0 +1,20 @@
+{
+  "name": "egh/wp-local-media-proxy",
+  "description": "A lightweight WordPress plugin that proxies missing local media from a remote CDN or production domain while working in a local development environment.",
+  "type": "library",
+  "autoload": {
+    "psr-4": {
+      "LocalMediaProxy\\": "src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "Evan Henry"
+    }
+  ],
+  "require": {
+    "php": ">=7.4"
+  },
+  "minimum-stability": "stable",
+  "prefer-stable": true
+}
