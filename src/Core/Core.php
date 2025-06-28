@@ -3,6 +3,7 @@
 namespace LocalMediaProxy\Core;
 
 use LocalMediaProxy\Core\Admin\Admin;
+use LocalMediaProxy\Features\Proxy;
 
 /**
  * Class Core
@@ -107,6 +108,9 @@ class Core
     {
         // Register plugin settings, fields, and options page in the WordPress admin
         (new Admin())->register();
+
+        // Enable the media replacement proxy
+        (new Proxy())->register();
     }
 
     /**
