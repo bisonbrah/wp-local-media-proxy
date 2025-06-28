@@ -36,6 +36,7 @@ class Loader
 
     /**
      * Adds a WordPress action to the internal actions array.
+     * Ref: https://developer.wordpress.org/reference/functions/add_filter/
      *
      * @param string $hook The name of the WordPress action that is being registered.
      * @param mixed $component A reference to the instance of the class on which the callback is defined.
@@ -64,6 +65,7 @@ class Loader
 
     /**
      * Adds a filter to the list of filters to be registered with WordPress.
+     * Ref: https://developer.wordpress.org/reference/functions/add_action/
      *
      * @param string $hook The name of the WordPress filter to be registered.
      * @param object $component The instance of the object on which the filter is defined.
@@ -93,6 +95,7 @@ class Loader
 
     /**
      * Adds a new hook configuration to the provided hooks array.
+     * Ref: https://developer.wordpress.org/plugins/hooks/custom-hooks/
      *
      * @param array $hooks The array of existing hooks to which the new hook will be added.
      * @param string $hook The name of the hook to be registered.

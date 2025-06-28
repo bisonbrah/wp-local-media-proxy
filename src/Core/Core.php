@@ -2,6 +2,8 @@
 
 namespace LocalMediaProxy\Core;
 
+use LocalMediaProxy\Core\Admin\Admin;
+
 /**
  * Class Core
  *
@@ -57,11 +59,6 @@ class Core
     private bool $logging_enabled = false;
 
     /**
-     * @var array $debug_features Stores active debug feature classes.
-     */
-    protected array $debug_features = [];
-
-    /**
      * Initializes the plugin by setting up its properties and defining hooks.
      *
      * @param string $plugin_file The path to the main plugin file.
@@ -75,6 +72,7 @@ class Core
         $this->asset_url = plugin_dir_url($plugin_file) . 'assets/';
         $this->load_dependencies();
         $this->set_locale();
+        $this->loader->add_action('plugins_loaded', $this, 'init'); // Hook debug registration
     }
 
     /**
@@ -108,8 +106,7 @@ class Core
     public function init(): void
     {
         // Register plugin settings, fields, and options page in the WordPress admin
-        // TODO: Add in admin class
-        //(new Admin())->register();
+        (new Admin())->register();
     }
 
     /**
