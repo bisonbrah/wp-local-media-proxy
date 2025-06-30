@@ -42,19 +42,18 @@ class Proxy
         $local_path = $uploads['basedir'] . $relative_path;
 
         if (file_exists($local_path)) {
-            return $url; // file exists locally → no rewrite
+            return $url; // file exists locally → no rewrite needed
         }
 
         $remote_base = get_option('lmcdn_remote_base_url', '');
-        if (empty($remote_base)) {
-            return $url; // no remote base URL configured
+        $secret_key = get_option('lmcdn_proxy_secret', '');
+
+        if (empty($remote_base) || empty($secret_key)) {
+            return $url; // bail if config missing
         }
 
-        // NEW: rewrite to production API endpoint instead of direct CDN URL
-        $rewritten = trailingslashit($remote_base) . 'wp-json/lmcdn/v1/proxy?path=' . ltrim($relative_path, '/');
-
-        // ORIGINAL direct CDN fallback (commented out for reference):
-        // $rewritten = trailingslashit($remote_base) . ltrim($relative_path, '/');
+        // Build rewritten proxy API URL with shared secret key
+        $rewritten = trailingslashit($remote_base) . 'wp-json/lmcdn/v1/proxy?path=' . ltrim($relative_path, '/') . '&key=' . urlencode($secret_key);
 
         return $rewritten;
     }

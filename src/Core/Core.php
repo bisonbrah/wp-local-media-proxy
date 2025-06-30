@@ -4,6 +4,7 @@ namespace LocalMediaProxy\Core;
 
 use LocalMediaProxy\Core\Admin\Admin;
 use LocalMediaProxy\Features\Proxy;
+use LocalMediaProxy\Features\ProxyEndpoint;
 
 /**
  * Class Core
@@ -57,7 +58,7 @@ class Core
     /**
      * @var bool $logging_enabled Easy check to turn on/off logs.
      */
-    private bool $logging_enabled = false;
+    private bool $logging_enabled = true;
 
     /**
      * Initializes the plugin by setting up its properties and defining hooks.
@@ -109,17 +110,40 @@ class Core
         // Register plugin settings, fields, and options page in the WordPress admin
         (new Admin())->register();
 
-        // Enable the media replacement proxy
-        (new Proxy())->register();
+        // Register the media replacement proxy
+        if (get_option('lmcdn_use_proxy', false)) {
+            (new Proxy())->register();
+        }
+
+        // Register proxy API endpoint on production
+        if (get_option('lmcdn_act_as_proxy', false)) {
+            (new ProxyEndpoint())->register();
+        }
     }
 
     /**
-     * Activates the plugin and initializes the CRON
+     * Activates the plugin and initializes plugin options.
      *
      * @return void
      */
     public function activate(): void
     {
+        if (get_option('lmcdn_use_proxy') === false) {
+            update_option('lmcdn_use_proxy', 0);
+        }
+
+        if (get_option('lmcdn_act_as_proxy') === false) {
+            update_option('lmcdn_act_as_proxy', 0);
+        }
+
+        if (get_option('lmcdn_remote_base_url') === false) {
+            update_option('lmcdn_remote_base_url', '');
+        }
+
+        if (get_option('lmcdn_proxy_secret') === false) {
+            update_option('lmcdn_proxy_secret', '');
+        }
+
         if ($this->logging_enabled) {
             error_log('Local Media Proxy: Plugin activated successfully');
         }
