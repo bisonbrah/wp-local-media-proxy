@@ -47,7 +47,7 @@ class Loader
      */
     public function add_action(
         string $hook,
-        mixed  $component,
+        object  $component,
         string $callback,
         int    $priority = 10,
         int    $accepted_args = 1

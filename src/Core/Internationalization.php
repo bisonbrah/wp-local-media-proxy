@@ -11,13 +11,19 @@ namespace LocalMediaProxy\Core;
 class Internationalization
 {
     /**
+     * @var string The text domain used for localization or translation purposes.
+     */
+    private string $text_domain;
+
+    /**
      * Constructor method for initializing the class with a text domain.
      *
      * @param string $text_domain The text domain used for localization or translation purposes.
      * @return void
      */
-    public function __construct(private string $text_domain)
+    public function __construct(string $text_domain)
     {
+        $this->text_domain = $text_domain;
     }
 
     /**
