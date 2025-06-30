@@ -1,7 +1,72 @@
 # WP Local Media Proxy
 
-A lightweight WordPress plugin that proxies missing local media from a remote CDN or production domain while working in a local development environment.
+A lightweight WordPress plugin that proxies missing local media from a remote CDN or production domain — perfect for local development environments that don’t have a full media library.
+
+---
+
+## Features
+
+- Automatically rewrites URLs for missing media to pull from your configured remote site
+- Supports local/staging “rewrite mode” and production “proxy mode”
+- Uses a shared secret key for secure proxying
+- Zero-config: plugin auto-initializes options on activation
+- Lightweight and optimized for performance
+
+---
 
 ## Description
 
-This plugin allows you to set a remote base URL for your WordPress media uploads. When a media file is missing locally, the plugin will dynamically rewrite the URL so the file is fetched from your specified remote server instead. This saves time and disk space by avoiding the need to download your entire production media library.
+When working on a local or staging site, you often have some media files but not the complete uploads library. Missing images can break layouts or slow down your workflow. Downloading the entire media directory just to fix a few missing files can be time-consuming and wasteful.
+
+**This plugin solves that problem!** It automatically rewrites missing media URLs to fetch them from your live production site or CDN, letting you develop with confidence — no massive downloads required.
+
+WP Local Media Proxy lets you specify a remote base URL (usually your production server). If WordPress tries to load an image or file that’s missing locally, this plugin dynamically rewrites the URL so the file is served from your remote server instead — saving time, disk space, and headaches.
+
+For production environments, the plugin exposes a secure REST API endpoint that can serve media to local/staging sites, requiring a shared secret key for protection.
+
+---
+
+## Usage Instructions
+
+1. Install and activate the plugin on both your local site and your remote/production site.
+2. In your WordPress admin under **Tools → Local Media Proxy**, configure:
+    - On your local site:
+        - Set the **Remote Media Base URL** to your production domain’s root URL (e.g., `https://yoursite.com`).
+        - Enable **Rewrite Mode** (for local/staging).
+        - Enter the **Shared Secret Key** (must match the key on your production site).
+    - On your production site:
+        - Enable **Proxy Mode** (for production).
+        - Enter the same **Shared Secret Key** as your local site.
+3. That’s it! Missing media files on your local site will load from production transparently.
+
+---
+
+## Useful WP-CLI Commands
+
+```bash
+# Check current remote base URL
+wp option get lmcdn_remote_base_url
+
+# Generate a random 32-character key (use this for your shared secret)
+wp eval 'echo wp_generate_password(32, false) . "\n";'
+```
+
+
+## Dev Notes: To-Do List
+
+- Add more robust error handling and user-friendly admin notices when the proxy fails.
+- Implement logging for proxy failures with adjustable verbosity levels.
+- Add caching for missing file lookups to reduce repeated proxy requests for truly missing files.
+- Create a CLI command to reset plugin options to default state.
+- Add automated tests (unit/integration) for the rewrite and proxy logic.
+- Add a button in the plugin admin page to generate and save a new secret key.
+- Improve documentation and include screenshots of the settings page.
+- Build a settings validation routine to alert if the remote base URL or secret key are misconfigured.
+- Add internationalization support for admin notices and UI.
+- Optimize REST API response headers (e.g., caching, CORS) for better performance.
+- Add support for batching image requests to optimize performance when many files are missing.
+- Implement a log viewer in the admin to track which images were served via proxy.
+- Add a counter in the admin dashboard showing how many images were served remotely during development.
+- Support multiple remote base URLs to handle other assets (e.g., theme or plugin resources).
+- Create an uninstall script (`uninstall.php`) to clean up plugin options and database entries on removal.
+- Develop a database upgrade routine to handle future changes or new features requiring schema updates.
