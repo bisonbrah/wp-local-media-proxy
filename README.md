@@ -70,3 +70,4 @@ wp eval 'echo wp_generate_password(32, false) . "\n";'
 - Support multiple remote base URLs to handle other assets (e.g., theme or plugin resources).
 - Create an uninstall script (`uninstall.php`) to clean up plugin options and database entries on removal.
 - Develop a database upgrade routine to handle future changes or new features requiring schema updates.
+- Add is a field for (production) side of the plugin for approved domains as another security check.

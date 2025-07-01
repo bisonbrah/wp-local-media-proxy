@@ -67,7 +67,7 @@ Key Recommendations
 2. Sanitize all user inputs in admin and proxy endpoints.
 3. Escape outputs in HTML/JSON.
 4. Polish admin UI with instructions and proper messages.
-5(Optional) Add translation files and tests.
+5. (Optional) Add translation files and tests.
 
 
 Should you release it publicly now?
