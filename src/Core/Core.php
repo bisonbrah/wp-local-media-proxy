@@ -109,6 +109,7 @@ class Core
     {
         // Register plugin settings, fields, and options page in the WordPress admin
         (new Admin())->register();
+        (new Admin())->registerHooks();
 
         // Register the media replacement proxy
         if (get_option('lmcdn_use_proxy', false)) {
