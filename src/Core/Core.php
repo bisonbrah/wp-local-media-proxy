@@ -145,9 +145,12 @@ class Core
             update_option('lmcdn_proxy_secret', '');
         }
 
-        if ($this->logging_enabled) {
-            error_log('Local Media Proxy: Plugin activated successfully');
+        // TODO: Might make sense to set to none and update in Logger
+        if (get_option('lmcdn_log_level') === false) {
+            update_option('lmcdn_log_level', 'basic');
         }
+
+        Logger::log('Local Media Proxy: Plugin activated successfully', 'info');
     }
 
     /**
@@ -157,9 +160,7 @@ class Core
      */
     public function deactivate(): void
     {
-        if ($this->logging_enabled) {
-            error_log('Local Media Proxy: Plugin deactivated successfully');
-        }
+        Logger::log('Local Media Proxy: Plugin deactivated successfully', 'info');
     }
 
     /**
