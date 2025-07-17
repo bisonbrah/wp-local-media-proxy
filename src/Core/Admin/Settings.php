@@ -31,6 +31,11 @@ class Settings
     private string $option_secret_key = 'lmcdn_proxy_secret';
 
     /**
+     * @var string The option name for logging verbosity.
+     */
+    private string $option_log_level = 'lmcdn_log_level';
+
+    /**
      * Registers the admin menu page and the plugin settings with WordPress.
      *
      * @return void
@@ -64,24 +69,33 @@ class Settings
      */
     public function register_settings(): void
     {
-        // Register existing Remote Base URL option
+        // Register the Remote Base URL option (where your remote files live)
         register_setting('lmcdn_settings_group', $this->option_name, [
             'sanitize_callback' => [$this, 'sanitize'],
         ]);
 
-        // Register new options for rewrite mode, proxy mode, and secret key
+        // Register the checkbox option for enabling rewrite mode (local)
         register_setting('lmcdn_settings_group', $this->option_rewrite_mode, [
             'sanitize_callback' => [$this, 'sanitize_checkbox'],
         ]);
 
+        // Register the checkbox option for enabling proxy mode (production)
         register_setting('lmcdn_settings_group', $this->option_proxy_mode, [
             'sanitize_callback' => [$this, 'sanitize_checkbox'],
         ]);
 
+        // Register the input option for the shared secret key (proxy auth)
         register_setting('lmcdn_settings_group', $this->option_secret_key, [
             'sanitize_callback' => [$this, 'sanitize_secret_key'],
         ]);
 
+        // Register the select option for logging verbosity
+        register_setting('lmcdn_settings_group', $this->option_log_level, [
+            'sanitize_callback' => [$this, 'sanitize_log_level'],
+            'default' => 'basic',
+        ]);
+
+        // Groups all settings fields under "Remote Media Settings"
         add_settings_section(
             'lmcdn_main_section',
             __('Remote Media Settings', 'wp-local-media-proxy'),
@@ -89,6 +103,7 @@ class Settings
             'local-media-proxy'
         );
 
+        // Add field for remote base URL
         add_settings_field(
             $this->option_name,
             __('Remote Media Base URL', 'wp-local-media-proxy'),
@@ -97,6 +112,7 @@ class Settings
             'lmcdn_main_section'
         );
 
+        // Add field for rewrite mode
         add_settings_field(
             $this->option_rewrite_mode,
             __('Enable Rewrite Mode (Local)', 'wp-local-media-proxy'),
@@ -105,6 +121,7 @@ class Settings
             'lmcdn_main_section'
         );
 
+        // Add field for proxy mode
         add_settings_field(
             $this->option_proxy_mode,
             __('Enable Proxy Mode (Production)', 'wp-local-media-proxy'),
@@ -113,10 +130,20 @@ class Settings
             'lmcdn_main_section'
         );
 
+        // Add field for shared secret key
         add_settings_field(
             $this->option_secret_key,
             __('Shared Secret Key', 'wp-local-media-proxy'),
             [$this, 'render_secret_key_field'],
+            'local-media-proxy',
+            'lmcdn_main_section'
+        );
+
+        // Add field for logging verbosity (new)
+        add_settings_field(
+            $this->option_log_level,
+            __('Log Verbosity', 'wp-local-media-proxy'),
+            [$this, 'render_log_level_field'],
             'local-media-proxy',
             'lmcdn_main_section'
         );
@@ -208,6 +235,24 @@ class Settings
     }
 
     /**
+     * Renders the select field for logging verbosity.
+     *
+     * @return void
+     */
+    public function render_log_level_field(): void
+    {
+        $value = get_option($this->option_log_level, 'basic');
+        ?>
+        <select id="<?php echo esc_attr($this->option_log_level); ?>" name="<?php echo esc_attr($this->option_log_level); ?>">
+            <option value="none" <?php selected($value, 'none'); ?>><?php esc_html_e('None (disable all logging)', 'wp-local-media-proxy'); ?></option>
+            <option value="basic" <?php selected($value, 'basic'); ?>><?php esc_html_e('Basic (errors only)', 'wp-local-media-proxy'); ?></option>
+            <option value="detailed" <?php selected($value, 'detailed'); ?>><?php esc_html_e('Detailed (all requests)', 'wp-local-media-proxy'); ?></option>
+        </select>
+        <p class="description"><?php esc_html_e('Choose how much proxy activity is written to the PHP error log.', 'wp-local-media-proxy'); ?></p>
+        <?php
+    }
+
+    /**
      * Sanitizes the input before saving it to the database.
      *
      * @param string $input The raw input from the form.
@@ -229,6 +274,20 @@ class Settings
 
         return $sanitized;
     }
+
+    /**
+     * Sanitizes the log level input.
+     *
+     * @param string $input The raw input value.
+     * @return string The sanitized log level.
+     */
+    public function sanitize_log_level(string $input): string
+    {
+        $allowed = ['none', 'basic', 'detailed'];
+        $input = strtolower(trim($input));
+        return in_array($input, $allowed, true) ? $input : 'basic';
+    }
+
 
     /**
      * Sanitizes checkbox inputs.
