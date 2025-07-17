@@ -1,4 +1,6 @@
 # WP Local Media Proxy
+> **⚠️ Work in Progress:**
+> This plugin is in early development, is not intended for production use, and may change at any time. Play around, experiment, and feel free to open issues or share feedback!
 
 A lightweight WordPress plugin that proxies missing local media from a remote CDN or production domain — perfect for local development environments that don’t have a full media library.
 
@@ -36,20 +38,18 @@ For production environments, the plugin exposes a secure REST API endpoint that 
     - On your production site:
         - Enable **Proxy Mode** (for production).
         - Enter the same **Shared Secret Key** as your local site.
-3. That’s it! Missing media files on your local site will load from production transparently.
+3. That’s it! Missing media files on your local site will load transparently from production.
+4. **Log Verbosity** defaults to `'basic'`. More features and use cases coming soon.
 
 ---
 
 ## Useful WP-CLI Commands
 
-```bash
-# Check current remote base URL
-wp option get lmcdn_remote_base_url
-
-# Generate a random 32-character key (use this for your shared secret)
+```
+# Generate a random 32-character key (use this for your shared secret) - helper
 wp eval 'echo wp_generate_password(32, false) . "\n";'
 
-# Zip up the plugin
+# Zip up the plugin - helper 
 zip -r wp-local-media-proxy.zip wp-local-media-proxy -x "*.git*" -x "*.DS_Store*" -x "node_modules/*" -x "*.log"
 ```
 
@@ -77,9 +77,24 @@ zip -r wp-local-media-proxy.zip wp-local-media-proxy -x "*.git*" -x "*.DS_Store*
 
 ### General Enhancements
 - Add internationalization support for admin notices and UI.
-- Create an uninstall script (`uninstall.php`) to clean up plugin options and database entries on removal.
+- Update the uninstall script (`uninstall.php`) to clean up plugin options and database entries on removal.
 - Develop a database upgrade routine to handle future changes or new features requiring schema updates.
 - Add a field on the production side of the plugin to specify approved domains for proxy requests (additional security).
 
 ### Documentation
 - Improve documentation and include screenshots of the settings page.
+
+## Contributing
+
+This is my first public plugin, so I'm learning as I go!  
+Ideas, feedback, and contributions from everyone (especially other beginners) are very welcome.
+
+- [Open an issue](https://github.com/bisonbrah/wp-local-media-proxy/issues) to discuss bugs or feature ideas.
+- Fork the repo and submit a pull request with your proposed changes.
+- If you're new to contributing (like me!), don't hesitate to ask questions in the issues — let's figure it out together!
+
+---
+
+## License
+
+This plugin is open source, released under the [GPL v3](LICENSE.txt).
