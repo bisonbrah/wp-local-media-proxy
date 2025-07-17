@@ -9,7 +9,6 @@ A lightweight WordPress plugin that proxies missing local media from a remote CD
 - Automatically rewrites URLs for missing media to pull from your configured remote site
 - Supports local/staging “rewrite mode” and production “proxy mode”
 - Uses a shared secret key for secure proxying
-- Zero-config: plugin auto-initializes options on activation
 - Lightweight and optimized for performance
 
 ---
@@ -49,25 +48,38 @@ wp option get lmcdn_remote_base_url
 
 # Generate a random 32-character key (use this for your shared secret)
 wp eval 'echo wp_generate_password(32, false) . "\n";'
-```
 
+# Zip up the plugin
+zip -r wp-local-media-proxy.zip wp-local-media-proxy -x "*.git*" -x "*.DS_Store*" -x "node_modules/*" -x "*.log"
+```
 
 ## Dev Notes: To-Do List
 
-- Add more robust error handling and user-friendly admin notices when the proxy fails.
-- Implement logging for proxy failures with adjustable verbosity levels.
-- Add caching for missing file lookups to reduce repeated proxy requests for truly missing files.
-- Create a CLI command to reset plugin options to default state.
-- Add automated tests (unit/integration) for the rewrite and proxy logic.
-- Add a button in the plugin admin page to generate and save a new secret key.
-- Improve documentation and include screenshots of the settings page.
-- Build a settings validation routine to alert if the remote base URL or secret key are misconfigured.
-- Add internationalization support for admin notices and UI.
-- Optimize REST API response headers (e.g., caching, CORS) for better performance.
+### Features
 - Add support for batching image requests to optimize performance when many files are missing.
 - Implement a log viewer in the admin to track which images were served via proxy.
 - Add a counter in the admin dashboard showing how many images were served remotely during development.
 - Support multiple remote base URLs to handle other assets (e.g., theme or plugin resources).
+- ~~Add more robust error handling and user-friendly admin notices when the proxy fails.~~
+
+### Performance
+- Add caching for missing file lookups to reduce repeated proxy requests for truly missing files.
+- Optimize REST API response headers (e.g., caching, CORS) for better performance.
+
+### Developer Experience
+- Add automated tests (unit/integration) for the rewrite and proxy logic.
+- Create a CLI command to reset plugin options to default state.
+- ~~Implement logging for proxy failures with adjustable verbosity levels.~~
+
+### Local/Admin Improvements
+- Add a button in the plugin admin page to generate and save a new secret key.
+- Build a settings validation routine to alert if the remote base URL or secret key are misconfigured.
+
+### General Enhancements
+- Add internationalization support for admin notices and UI.
 - Create an uninstall script (`uninstall.php`) to clean up plugin options and database entries on removal.
 - Develop a database upgrade routine to handle future changes or new features requiring schema updates.
-- Add is a field for (production) side of the plugin for approved domains as another security check.
+- Add a field on the production side of the plugin to specify approved domains for proxy requests (additional security).
+
+### Documentation
+- Improve documentation and include screenshots of the settings page.
