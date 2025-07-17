@@ -2,6 +2,8 @@
 
 namespace LocalMediaProxy\Features;
 
+use LocalMediaProxy\Core\Logger;
+
 /**
  * Class ProxyEndpoint
  *
@@ -28,6 +30,7 @@ class ProxyEndpoint
     public function register_endpoint(): void
     {
         $is_proxy_enabled = get_option('lmcdn_act_as_proxy', false);
+
         if (!$is_proxy_enabled) {
             return;
         }
@@ -56,7 +59,14 @@ class ProxyEndpoint
         // Validate the key: if missing or does not match, log and return 403 Unauthorized
         if (empty($expected_key) || $key !== $expected_key) {
             set_transient('lmcdn_last_proxy_error', 'Proxy request failed: Invalid key.', 60);
-            $this->log_attempt(false, 'Invalid key', $request);
+
+            // TODO: Move log formatting into Logger helper methods if patterns emerge
+            Logger::log(sprintf(
+                'FAIL | Invalid key | Path: %s | IP: %s',
+                sanitize_text_field($request->get_param('path')),
+                $_SERVER['REMOTE_ADDR'] ?? 'unknown'
+            ), 'error');
+
             return new \WP_REST_Response(['error' => 'Unauthorized'], 403);
         }
 
@@ -66,7 +76,13 @@ class ProxyEndpoint
         // Validate the path: it must not be empty
         if (!$path) {
             set_transient('lmcdn_last_proxy_error', 'Proxy request failed: No path specified.', 60);
-            $this->log_attempt(false, 'Missing path', $request);
+
+            // TODO: Move log formatting into Logger helper methods if patterns emerge
+            Logger::log(sprintf(
+                'FAIL | Missing path | Path: %s | IP: %s',
+                $path,
+                $_SERVER['REMOTE_ADDR'] ?? 'unknown'
+            ), 'error');
 
             return new \WP_REST_Response(['error' => 'No path specified'], 400);
         }
@@ -84,15 +100,25 @@ class ProxyEndpoint
         // - Must exist on disk
         if (!$resolved || strpos($resolved, $allowed_base) !== 0 || !file_exists($resolved)) {
             set_transient('lmcdn_last_proxy_error', 'Proxy request failed: File not found or outside uploads.', 60);
-            $this->log_attempt(false, 'Invalid or missing file', $request);
+
+            // TODO: Move log formatting into Logger helper methods if patterns emerge
+            Logger::log(sprintf(
+                'FAIL | Invalid or missing file | Path: %s | IP: %s',
+                $path,
+                $_SERVER['REMOTE_ADDR'] ?? 'unknown'
+            ), 'error');
 
             return new \WP_REST_Response(['error' => 'File not found'], 404);
         }
 
         // Placeholder for rate limiting logic in the future
 
-        // Log successful attempt
-        $this->log_attempt(true, 'Served file', $request);
+        // TODO: Move log formatting into Logger helper methods if patterns emerge
+        Logger::log(sprintf(
+            'SUCCESS | Served file | Path: %s | IP: %s',
+            $path,
+            $_SERVER['REMOTE_ADDR'] ?? 'unknown'
+        ), 'info');
 
         // Determine the MIME type of the file; default to binary if unknown
         $mime = wp_check_filetype($resolved)['type'] ?: 'application/octet-stream';
@@ -111,24 +137,5 @@ class ProxyEndpoint
 
         // Stop script execution after serving the file
         exit;
-    }
-
-    /**
-     * Logs each request attempt for auditing purposes.
-     *
-     * @param bool $success Whether the request was successful.
-     * @param string $reason The reason for success or failure.
-     * @param \WP_REST_Request $request The REST request object.
-     * @return void
-     */
-    protected function log_attempt(bool $success, string $reason, \WP_REST_Request $request): void
-    {
-        error_log(sprintf(
-            '[LMCDN Proxy] %s | %s | Path: %s | IP: %s',
-            $success ? 'SUCCESS' : 'FAIL',
-            $reason,
-            sanitize_text_field($request->get_param('path')),
-            $_SERVER['REMOTE_ADDR'] ?? 'unknown'
-        ));
     }
 }
