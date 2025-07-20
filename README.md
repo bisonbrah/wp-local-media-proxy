@@ -77,7 +77,7 @@ zip -r wp-local-media-proxy.zip wp-local-media-proxy -x "*.git*" -x "*.DS_Store*
 
 ### General Enhancements
 - Add internationalization support for admin notices and UI.
-- Update the uninstall script (`uninstall.php`) to clean up plugin options and database entries on removal.
+- ~~Update the uninstall script (`uninstall.php`) to clean up plugin options and database entries on removal.~~
 - Develop a database upgrade routine to handle future changes or new features requiring schema updates.
 - Add a field on the production side of the plugin to specify approved domains for proxy requests (additional security).
 
@@ -91,7 +91,7 @@ Ideas, feedback, and contributions from everyone (especially other beginners) ar
 
 - [Open an issue](https://github.com/bisonbrah/wp-local-media-proxy/issues) to discuss bugs or feature ideas.
 - Fork the repo and submit a pull request with your proposed changes.
-- If you're new to contributing (like me!), don't hesitate to ask questions in the issues — let's figure it out together!
+- If you're new to contributing (like me!), don't hesitate to ask questions in the issues or discusssions — let's figure it out together!
 
 ---
 
