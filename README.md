@@ -1,8 +1,5 @@
 # WP Local Media Proxy
-> **⚠️ Work in Progress:**
-> This plugin is in early development, is not intended for production use, and may change at any time. Play around, experiment, and feel free to open issues or share feedback!
-
-A lightweight WordPress plugin that proxies missing local media from a remote CDN or production domain — perfect for local development environments that don’t have a full media library.
+A lightweight WordPress plugin that proxies missing local media from a remote CDN or production domain — perfect for local development environments that don't have a full media library.
 
 ---
 
@@ -86,12 +83,10 @@ zip -r wp-local-media-proxy.zip wp-local-media-proxy -x "*.git*" -x "*.DS_Store*
 
 ## Contributing
 
-This is my first public plugin, so I'm learning as I go!  
-Ideas, feedback, and contributions from everyone (especially other beginners) are very welcome.
+Ideas, feedback, and contributions are welcome.
 
 - [Open an issue](https://github.com/bisonbrah/wp-local-media-proxy/issues) to discuss bugs or feature ideas.
 - Fork the repo and submit a pull request with your proposed changes.
-- If you're new to contributing (like me!), don't hesitate to ask questions in the issues or discusssions — let's figure it out together!
 
 ---
 
